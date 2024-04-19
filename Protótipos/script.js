@@ -1,97 +1,129 @@
-const taskInput = document.querySelector(".task-input input"),
-filters = document.querySelectorAll(".filters span"),
-clearAll = document.querySelector(".clear-btn"),
-taskBox = document.querySelector(".task-box");
-let editId,
-isEditTask = false,
-todos = JSON.parse(localStorage.getItem("todo-list"));
-filters.forEach(btn => {
-    btn.addEventListener("click", () => {
-        document.querySelector("span.active").classList.remove("active");
-        btn.classList.add("active");
-        showTodo(btn.id);
+document.getElementById('taskInput');
+const addTaskButton = document.getElementById('addTaskButton');
+const taskList = document.getElementById('taskList');
+const allTasksFilter = document.getElementById('allTasks');
+const pendingTasksFilter = document.getElementById('pendingTasks');
+const completedTasksFilter = document.getElementById('completedTasks');
+const noTasksMessage = document.querySelector('.noTasksMessage');
+const taskTypeSelect = document.getElementById('taskType');
+const dateInputContainer = document.getElementById('dateInputContainer');
+const deadlineInputContainer = document.getElementById('deadlineInputContainer');
+
+addTaskButton.addEventListener('click', addTask);
+allTasksFilter.addEventListener('click', filterTasks);
+pendingTasksFilter.addEventListener('click', filterTasks);
+completedTasksFilter.addEventListener('click', filterTasks);
+taskTypeSelect.addEventListener('change', toggleTaskInputs);
+
+taskList.addEventListener('change', toggleTaskStatus);
+taskList.addEventListener('click', handleTaskOptions);
+
+function addTask() {
+    const taskText = taskInput.value.trim();
+    if (taskText !== '') {
+        const task = document.createElement('div');
+        task.classList.add('task');
+        task.innerHTML = `
+            <input type="checkbox">
+            <p>${taskText}</p>
+            <div class="options">
+                ...
+                <div class="options-menu">
+                    <div class="option-item edit-option">Editar</div>
+                    <div class="option-item delete-option">Excluir</div>
+                </div>
+            </div>
+        `;
+        taskList.appendChild(task);
+        taskInput.value = '';
+        checkTaskList();
+        activateOptions(); // Ativar opções para a nova tarefa
+    }
+}
+
+function filterTasks(event) {
+    const filter = event.target.id;
+    const tasks = document.querySelectorAll('.task');
+    const activeFilter = document.querySelector('.filter.active');
+    if (activeFilter) {
+        activeFilter.classList.remove('active');
+    }
+    event.target.classList.add('active');
+    tasks.forEach(task => {
+        const checkbox = task.querySelector('input[type="checkbox"]');
+        if (filter === 'allTasks') {
+            task.style.display = 'flex';
+        } else if (filter === 'pendingTasks') {
+            task.style.display = checkbox.checked ? 'none' : 'flex';
+        } else if (filter === 'completedTasks') {
+            task.style.display = checkbox.checked ? 'flex' : 'none';
+        }
     });
-});
-function showTodo(filter) {
-    let liTag = "";
-    if(todos) {
-        todos.forEach((todo, id) => {
-            let completed = todo.status == "completed" ? "checked" : "";
-            if(filter == todo.status || filter == "all") {
-                liTag += `<li class="task">
-                            <label for="${id}">
-                                <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
-                                <p class="${completed}">${todo.name}</p>
-                            </label>
-                            <div class="settings">
-                                <i onclick="showMenu(this)" class="uil uil-ellipsis-h"></i>
-                                <ul class="task-menu">
-                                    <li onclick='editTask(${id}, "${todo.name}")'><i class="uil uil-pen"></i>Edit</li>
-                                    <li onclick='deleteTask(${id}, "${filter}")'><i class="uil uil-trash"></i>Delete</li>
-                                </ul>
-                            </div>
-                        </li>`;
+    checkTaskList();
+}
+
+function checkTaskList() {
+    const tasks = document.querySelectorAll('.task');
+    let noTasksMessageText = 'Você não tem tarefas aqui';
+    if (tasks.length === 0) {
+        noTasksMessage.textContent = noTasksMessageText;
+        noTasksMessage.style.display = 'block';
+    } else {
+        noTasksMessage.style.display = 'none';
+    }
+}
+
+function activateOptions() {
+    const optionsMenus = document.querySelectorAll('.options');
+    optionsMenus.forEach(menu => {
+        const optionsMenu = menu.querySelector('.options-menu');
+        menu.addEventListener('click', () => {
+            optionsMenu.style.display = optionsMenu.style.display === 'block' ? 'none' : 'block';
+        });
+        // Adiciona event listener para fechar o menu quando clicar fora dele
+        document.addEventListener('click', function(event) {
+            if (!menu.contains(event.target)) {
+                optionsMenu.style.display = 'none';
             }
         });
-    }
-    taskBox.innerHTML = liTag || `<span>Você não tem tarefas</span>`;
-    let checkTask = taskBox.querySelectorAll(".task");
-    !checkTask.length ? clearAll.classList.remove("active") : clearAll.classList.add("active");
-    taskBox.offsetHeight >= 300 ? taskBox.classList.add("overflow") : taskBox.classList.remove("overflow");
-}
-showTodo("all");
-function showMenu(selectedTask) {
-    let menuDiv = selectedTask.parentElement.lastElementChild;
-    menuDiv.classList.add("show");
-    document.addEventListener("click", e => {
-        if(e.target.tagName != "I" || e.target != selectedTask) {
-            menuDiv.classList.remove("show");
-        }
     });
 }
-function updateStatus(selectedTask) {
-    let taskName = selectedTask.parentElement.lastElementChild;
-    if(selectedTask.checked) {
-        taskName.classList.add("checked");
-        todos[selectedTask.id].status = "completed";
-    } else {
-        taskName.classList.remove("checked");
-        todos[selectedTask.id].status = "pending";
-    }
-    localStorage.setItem("todo-list", JSON.stringify(todos))
-}
-function editTask(taskId, textName) {
-    editId = taskId;
-    isEditTask = true;
-    taskInput.value = textName;
-    taskInput.focus();
-    taskInput.classList.add("active");
-}
-function deleteTask(deleteId, filter) {
-    isEditTask = false;
-    todos.splice(deleteId, 1);
-    localStorage.setItem("todo-list", JSON.stringify(todos));
-    showTodo(filter);
-}
-clearAll.addEventListener("click", () => {
-    isEditTask = false;
-    todos.splice(0, todos.length);
-    localStorage.setItem("todo-list", JSON.stringify(todos));
-    showTodo()
-});
-taskInput.addEventListener("keyup", e => {
-    let userTask = taskInput.value.trim();
-    if(e.key == "Enter" && userTask) {
-        if(!isEditTask) {
-            todos = !todos ? [] : todos;
-            let taskInfo = {name: userTask, status: "pending"};
-            todos.push(taskInfo);
+
+function toggleTaskStatus(event) {
+    if (event.target.type === 'checkbox') {
+        const task = event.target.parentElement;
+        if (event.target.checked) {
+            task.querySelector('p').classList.add('completed-task');
         } else {
-            isEditTask = false;
-            todos[editId].name = userTask;
+            task.querySelector('p').classList.remove('completed-task');
         }
-        taskInput.value = "";
-        localStorage.setItem("todo-list", JSON.stringify(todos));
-        showTodo(document.querySelector("span.active").id);
     }
-});
+}
+
+function handleTaskOptions(event) {
+    if (event.target.classList.contains('option-item')) {
+        const task = event.target.closest('.task');
+        if (event.target.classList.contains('delete-option')) {
+            task.remove();
+            checkTaskList();
+        } else if (event.target.classList.contains('edit-option')) {
+            const taskText = task.querySelector('p').textContent;
+            taskInput.value = taskText;
+            task.remove();
+        }
+    }
+}
+
+function toggleTaskInputs() {
+    const selectedType = taskTypeSelect.value;
+    if (selectedType === 'Data') {
+        dateInputContainer.style.display = 'block';
+        deadlineInputContainer.style.display = 'none';
+    } else if (selectedType === 'Prazo') {
+        dateInputContainer.style.display = 'none';
+        deadlineInputContainer.style.display = 'block';
+    } else {
+        dateInputContainer.style.display = 'none';
+        deadlineInputContainer.style.display = 'none';
+    }
+}
