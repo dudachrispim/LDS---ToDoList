@@ -1,26 +1,56 @@
 <!DOCTYPE html>
-<html lang="pt-br" dir="ltr">
-  <head>
-    <meta charset="utf-8">  
-    <title>Lista de Tarefas</title>
-    <link rel="stylesheet" href="style.css">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
-  <body>
-    <div class="wrapper">
-      <div class="task-input">
-        <input type="text" placeholder="Adicionar nova tarefa (pressione ENTER para enviar)">
-      </div>
-      <div class="controls">
-        <div class="filters">
-          <span class="active" id="all">Todas</span>
-          <span id="pending">Pendentes</span>
-          <span id="completed">Completadas</span>
+    <title>To Do List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1 class="title">TO DO LIST</h1>
+    <div class="container">
+        <div class="todo-header">
+            <div class="task-options">
+                <div class="task-option">
+                    <label for="taskType">Tipo:</label>
+                    <select id="taskType">
+                        <option value="Data">Data</option>
+                        <option value="Prazo">Prazo</option>
+                        <option value="Livre">Livre</option>
+                    </select>
+                </div>
+                <div class="task-option">
+                    <label for="taskPriority">Prioridade:</label>
+                    <select id="taskPriority">
+                        <option value="Alta">Alta</option>
+                        <option value="Média">Média</option>
+                        <option value="Baixa">Baixa</option>
+                    </select>
+                </div>
+            </div>
+            <div class="task-input-container" id="dateInputContainer" style="display: none;">
+                <label for="taskDate">Data Prevista:</label>
+                <input type="date" id="taskDate">
+            </div>
+            <div class="task-input-container" id="deadlineInputContainer" style="display: none;">
+                <label for="taskDeadline">Prazo Previsto (em dias):</label>
+                <input type="number" id="taskDeadline">
+            </div>
+            <label for="taskInput">Escreva sua tarefa:</label>
+            <input type="text" id="taskInput" placeholder="Escreva aqui sua nova tarefa">
+            <button id="addTaskButton">Enviar</button>
         </div>
-        <button class="clear-btn">Limpar tudo</button>
-      </div>
-      <ul class="task-box"></ul>
+        <div class="filters">
+            <span class="filter active" id="allTasks">Todas</span>
+            <span class="filter" id="pendingTasks">Pendentes</span>
+            <span class="filter" id="completedTasks">Concluídas</span>
+        </div>
+        <hr>
+        <div id="taskList">
+            <p class="noTasksMessage">Você não tem tarefas aqui</p>
+        </div>
     </div>
     <script src="script.js"></script>
-  </body>
+</body>
 </html>
