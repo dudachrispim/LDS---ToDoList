@@ -8,6 +8,9 @@ const noTasksMessage = document.querySelector('.noTasksMessage');
 const taskTypeSelect = document.getElementById('taskType');
 const dateInputContainer = document.getElementById('dateInputContainer');
 const deadlineInputContainer = document.getElementById('deadlineInputContainer');
+const modal = document.getElementById("myModal");
+const modalContent = document.getElementById("modalContent");
+const closeModal = document.querySelector(".close");
 
 addTaskButton.addEventListener('click', addTask);
 allTasksFilter.addEventListener('click', filterTasks);
@@ -18,6 +21,47 @@ taskTypeSelect.addEventListener('change', toggleTaskInputs);
 taskList.addEventListener('change', toggleTaskStatus);
 taskList.addEventListener('click', handleTaskOptions);
 
+document.addEventListener('click', function(event) {
+    const infoIcon = event.target.closest('.info-icon');
+    if (infoIcon) {
+        const task = infoIcon.closest('.task');
+        const taskText = task.querySelector('p').textContent;
+        const taskType = taskTypeSelect.value;
+        const taskPriority = document.getElementById('taskPriority').value;
+        let status;
+
+        if (taskType === 'Data') {
+            const taskDate = document.getElementById('taskDate').value;
+            const daysDifference = calculateDaysDifference(taskDate);
+            if (daysDifference < 0) {
+                status = `Atrasada por ${Math.abs(daysDifference)} dias`;
+            } else if (daysDifference === 0) {
+                status = 'Concluída';
+            } else {
+                status = `Falta(m) ${daysDifference} dia(s)`;
+            }
+            showModal(taskText, taskType, taskDate, status, taskPriority);
+        } else if (taskType === 'Prazo') {
+            const taskDeadline = parseInt(document.getElementById('taskDeadline').value);
+            status = taskDeadline > 0 ? `Falta(m) ${taskDeadline} dia(s)` : 'Concluída';
+            showModal(taskText, taskType, taskDeadline, status, taskPriority);
+        } else {
+            status = 'Prevista ou concluída';
+            showModal(taskText, taskType, null, status, taskPriority);
+        }
+    }
+});
+
+closeModal.addEventListener('click', function() {
+    modal.style.display = "none";
+});
+
+window.addEventListener('click', function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+});
+
 function addTask() {
     const taskText = taskInput.value.trim();
     if (taskText !== '') {
@@ -27,7 +71,8 @@ function addTask() {
             <input type="checkbox">
             <p>${taskText}</p>
             <div class="options">
-                ...
+                <div class="info-icon"><img src="simbolo-de-informacao.png" alt="Info" class="info-img"></div>
+                <div class="three-dots">...</div>
                 <div class="options-menu">
                     <div class="option-item edit-option">Editar</div>
                     <div class="option-item delete-option">Excluir</div>
@@ -37,7 +82,7 @@ function addTask() {
         taskList.appendChild(task);
         taskInput.value = '';
         checkTaskList();
-        activateOptions(); // Ativar opções para a nova tarefa
+        activateOptions(); 
     }
 }
 
@@ -126,4 +171,24 @@ function toggleTaskInputs() {
         dateInputContainer.style.display = 'none';
         deadlineInputContainer.style.display = 'none';
     }
+}
+
+function showModal(taskText, taskType, taskDateOrDeadline, status, taskPriority) {
+    let message;
+    if (taskType === 'Data') {
+        message = `Tarefa: ${taskText}<br>Tipo: ${taskType}<br>Data: ${taskDateOrDeadline}<br>Status: ${status}<br>Prioridade: ${taskPriority}`;
+    } else if (taskType === 'Prazo') {
+        message = `Tarefa: ${taskText}<br>Tipo: ${taskType}<br>Prazo: ${taskDateOrDeadline} dias<br>Status: ${status}<br>Prioridade: ${taskPriority}`;
+    } else {
+        message = `Tarefa: ${taskText}<br>Tipo: ${taskType}<br>Status: ${status}<br>Prioridade: ${taskPriority}`;
+    }
+    modalContent.innerHTML = message;
+    modal.style.display = "block";
+}
+
+function calculateDaysDifference(date) {
+    const today = new Date();
+    const taskDate = new Date(date);
+    const differenceInTime = taskDate.getTime() - today.getTime();
+    return Math.ceil(differenceInTime / (1000 * 3600 * 24));
 }
