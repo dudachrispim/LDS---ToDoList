@@ -1,0 +1,22 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS/java.puml
+!include DEVICONS/msql_server.puml
+!include FONTAWESOME/users.puml
+
+LAYOUT_TOP_DOWN()
+
+Person(person, "Usuário da Lista de Tarefas", "Usuário que interage com o sistema")
+
+System_Boundary(system, "Sistema de Lista de Tarefas") {
+    Container(webapp, "Aplicação Web", "Java e Spring Boot", "Entrega o conteúdo estático e a aplicação da lista de tarefas")
+    ContainerDb(data_base, "Banco de dados", "Container: H2", "Armazenamento de Dados", $sprite="msql_server")
+}
+
+Rel(person, webapp, "Visita", "HTTPS")
+Rel(webapp, data_base, "Usa", "JDBC/SQL")
+@enduml
