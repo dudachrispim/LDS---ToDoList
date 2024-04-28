@@ -1,0 +1,26 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS/java.puml
+!include DEVICONS/msql_server.puml
+!include FONTAWESOME/users.puml
+
+System_Boundary(system, "Aplicação Web (Spring Boot)") {
+    Container(controllers, "Controller", "Spring MVC Controller", "Camada que recebe requisições HTTP, processa e envia respostas de volta ao cliente, controlando a lógica da aplicação")
+    Container(services, "Service", "Spring Service", "Camada que contém a lógica de negócios da aplicação, coordenando operações entre Controllers e Repositories.")
+    Container(repositories, "Repository", "Spring Data JPA Repository", "Camada que acessa o banco de dados e executa operações de persistência de dados de forma eficiente")
+    Container(entities, "Entity", "Entity", "Camada que representa os objetos de negócio da aplicação, que são mapeados para as tabelas do banco de dados")
+}
+
+ContainerDb(data_base, "Banco de dados", "Container: H2", "Armazenamento de Dados", $sprite="msql_server")
+
+Rel(controllers, services, "Chama")
+Rel(services, repositories, "Acessa")
+Rel(repositories, entities, "Mapeia para")
+Rel(repositories, data_base, "Realiza operações de CRUD no", "Data JPA")
+
+SHOW_LEGEND()
+@enduml
