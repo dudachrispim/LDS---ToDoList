@@ -6,6 +6,6 @@ Este repositório possui:
 * Diagrama de Casos de uso e descrição: O diagrama de casos de uso atualizado juntamente com sua descrição estão armazenados em uma pasta chamada "Casos de Uso" no nível raiz do GIT.
 * Diagramas da solução de backend seguindo o padrão C4 Model: Os diagramas da solução de backend foram construídos conforme o padrão C4 Model e armazenados em uma pasta chamada "C4 Model" no nível raiz do GIT.
 * Os códigos do roteiro01 atualizados com:
-* Aderência das rotas aos padrões do Modelo de Maturidade de Richardson: As rotas dos endpoints seguem os padrões estabelecidos pelo Modelo de Maturidade de Richardson.
-* Documentação dos endpoints utilizando Swagger: Os endpoints foram documentados utilizando Swagger para facilitar o entendimento e integração com outras partes do sistema.
-* Adoção do modelo arquitetural em camadas (Controller – Service – Repository): O modelo arquitetural em camadas foi adotado, separando as responsabilidades em Controller, Service e Repository.
+- Aderência das rotas aos padrões do Modelo de Maturidade de Richardson: As rotas dos endpoints seguem os padrões estabelecidos pelo Modelo de Maturidade de Richardson.
+- Documentação dos endpoints utilizando Swagger: Os endpoints foram documentados utilizando Swagger para facilitar o entendimento e integração com outras partes do sistema.
+- Adoção do modelo arquitetural em camadas (Controller – Service – Repository): O modelo arquitetural em camadas foi adotado, separando as responsabilidades em Controller, Service e Repository.
