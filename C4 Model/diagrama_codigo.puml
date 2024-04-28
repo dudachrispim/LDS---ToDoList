@@ -1,0 +1,45 @@
+@startuml
+
+package "com.labdessoft.roteiro01.entity" {
+    class Task {
+        - id: Long
+        - title: String
+        - description: String
+        - completed: boolean
+        + Task()
+        + Task(Long, String, String, boolean)
+        + getId(): Long
+        + setId(Long): void
+        + getTitle(): String
+        + setTitle(String): void
+        + getDescription(): String
+        + setDescription(String): void
+        + isCompleted(): boolean
+        + setCompleted(boolean): void
+    }
+}
+
+package "com.labdessoft.roteiro01.controller" {
+    class TaskController {
+        - taskRepository: TaskRepository
+        + listAllTasks(): ResponseEntity<List<Task>>
+        + createTask(String): String
+        + updateTask(Long, String): String
+        + deleteTask(Long): String
+        + confirmTask(Long): String
+    }
+}
+
+package "com.labdessoft.roteiro01.repository" {
+    class TaskRepository {
+    }
+}
+
+class Roteiro01Application {
+}
+
+Task -- TaskRepository
+TaskController -- TaskRepository
+Roteiro01Application --> TaskController
+
+@enduml
