@@ -14,7 +14,7 @@ Person(person, "Usuário da Lista de Tarefas", "Usuário que interage com o sist
 
 System_Boundary(system, "Sistema de Lista de Tarefas") {
     Container(webapp, "Aplicação Web", "Java e Spring Boot", "Entrega o conteúdo estático e a aplicação da lista de tarefas")
-    ContainerDb(data_base, "Banco de dados", "Container: H2", "Armazenamento de Dados", $sprite="msql_server")
+    ContainerDb(data_base, "Banco de dados", "Container: PostgreSQL", "Armazenamento de Dados", $sprite="msql_server")
 }
 
 Rel(person, webapp, "Visita", "HTTPS")
