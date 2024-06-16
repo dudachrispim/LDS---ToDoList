@@ -15,7 +15,7 @@ System_Boundary(system, "Aplicação Web (Spring Boot)") {
     Container(entities, "Entity", "Entity", "Camada que representa os objetos de negócio da aplicação, que são mapeados para as tabelas do banco de dados")
 }
 
-ContainerDb(data_base, "Banco de dados", "Container: H2", "Armazenamento de Dados", $sprite="msql_server")
+ContainerDb(data_base, "Banco de dados", "Container: PostgreSQL", "Armazenamento de Dados", $sprite="msql_server")
 
 Rel(controllers, services, "Chama")
 Rel(services, repositories, "Acessa")
